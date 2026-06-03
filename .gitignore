@@ -1,11 +1,12 @@
-.DS_Store
-.idea/
-.vscode/
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
+env/
+venv/
+ENV/
 build/
 develop-eggs/
 dist/
@@ -22,31 +23,53 @@ wheels/
 .installed.cfg
 *.egg
 
-# 虚拟环境
-venv/
-env/
-ENV/
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
 
-# 配置文件（包含密钥）
-config/config.yaml
-
-# 日志文件
-logs/
-*.log
-
-# 截图文件
-screenshots/
+# 测试文件（不上传到GitHub）
+test_*.py
+tests/
 *.png
 *.jpg
 *.jpeg
 
-# PaddleOCR缓存
-.paddleocr/
-inference/
+# 日志
+logs/
+*.log
 
-# Jupyter Notebook
-.ipynb_checkpoints
+# 数据
+data/
+*.db
+*.sqlite
 
-# 系统文件
+# 临时文件
+tmp/
+temp/
+*.tmp
+
+# 配置（保留示例）
+config/config.yaml
+
+# 打包
+build/
+dist/
+*.spec
+
+# 系统
+.DS_Store
 Thumbs.db
-Desktop.ini
+
+# 内部文档和临时文件（不上传）
+TODO*.md
+PROJECT_*.md
+RELEASE_CHECKLIST.md
+FINAL_TODO.md
+src/ocr_engine_old.py
+requirements_tray.txt
+
+# 截图
+screenshots/
