@@ -1,0 +1,78 @@
+# AI配置示例
+ai:
+  # AI提供商: openai, claude
+  provider: "openai"
+
+  # API密钥（必填 - 请替换为你的密钥）
+  api_key: "your-api-key-here"
+
+  # 模型名称
+  # DeepSeek: deepseek-chat
+  # OpenAI: gpt-4o, gpt-4-turbo
+  # Claude: claude-3-5-sonnet-20241022
+  model: "deepseek-chat"
+
+  # API基础URL
+  # DeepSeek: https://api.deepseek.com
+  # OpenAI: null (使用默认)
+  # Claude: null (使用默认)
+  base_url: "https://api.deepseek.com"
+
+  # 超时设置（秒）
+  timeout: 30
+
+  # 最大重试次数
+  max_retries: 3
+
+# OCR配置
+ocr:
+  # RapidOCR（离线，完全免费）
+  # 无需任何配置
+
+  # 识别置信度阈值（0.0-1.0）
+  confidence_threshold: 0.5
+
+# 界面配置
+gui:
+  # 快捷键
+  hotkey: "f9"  # 快速答题快捷键
+
+  # 退出快捷键
+  quit_hotkey: "ctrl+q"
+
+  # 结果窗口透明度 (0.0-1.0)
+  window_opacity: 0.95
+
+  # 结果窗口自动关闭时间（秒，0为不自动关闭）
+  auto_close_seconds: 0
+
+  # 窗口主题: light, dark
+  theme: "light"
+
+  # 是否启用托盘图标
+  enable_tray: true
+
+# 截图配置
+capture:
+  # 截图后是否保存到文件（调试用）
+  save_screenshot: false
+
+  # 截图保存路径
+  screenshot_dir: "./screenshots"
+
+  # 选区边框颜色 (R, G, B)
+  border_color: [255, 0, 0]
+
+  # 选区边框宽度
+  border_width: 2
+
+# 日志配置
+logging:
+  # 日志级别: DEBUG, INFO, WARNING, ERROR
+  level: "INFO"
+
+  # 是否保存日志到文件
+  save_to_file: true
+
+  # 日志文件路径
+  log_file: "./logs/app.log"
