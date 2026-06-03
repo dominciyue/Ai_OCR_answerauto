@@ -46,10 +46,14 @@ def load_config():
             print("✅ 配置文件已创建")
 
     if not config_path.exists():
-        print("❌ 配置文件不存在！")
-        print(f"请在程序目录下创建 config/config.yaml 配置文件")
-        print(f"参考: config/config.example.yaml")
-        input("按回车键退出...")
+        import tkinter as tk
+        from tkinter import messagebox
+        root = tk.Tk()
+        root.withdraw()
+        messagebox.showerror(
+            "配置文件不存在",
+            f"配置文件不存在！\n\n请在程序目录下创建 config/config.yaml 配置文件\n\n参考: config/config.example.yaml\n\n程序目录: {ROOT_DIR}"
+        )
         sys.exit(1)
 
     try:
@@ -57,8 +61,11 @@ def load_config():
             config = yaml.safe_load(f)
         return config
     except Exception as e:
-        print(f"❌ 配置文件加载失败: {e}")
-        input("按回车键退出...")
+        import tkinter as tk
+        from tkinter import messagebox
+        root = tk.Tk()
+        root.withdraw()
+        messagebox.showerror("配置文件错误", f"配置文件加载失败:\n\n{e}")
         sys.exit(1)
 
 
@@ -101,9 +108,15 @@ def main():
     # 验证API密钥
     api_key = config.get('ai', {}).get('api_key')
     if not api_key or api_key in ["your-api-key-here", "your-deepseek-api-key-here"]:
-        print("❌ 请在 config/config.yaml 中配置有效的API密钥！")
-        print("📖 参考: config/config.example.yaml 或 CONFIG_GUIDE.md")
-        input("按回车键退出...")
+        import tkinter as tk
+        from tkinter import messagebox
+        root = tk.Tk()
+        root.withdraw()
+        messagebox.showerror(
+            "API密钥未配置",
+            "请在 config/config.yaml 中配置有效的API密钥！\n\n"
+            "参考: config/config.example.yaml 或 CONFIG_GUIDE.md"
+        )
         sys.exit(1)
 
     logger.info("配置加载成功")
@@ -137,8 +150,11 @@ def main():
         print("\n👋 程序已退出")
     except Exception as e:
         logger.error(f"程序运行出错: {e}", exc_info=True)
-        print(f"\n❌ 程序出错: {e}")
-        input("按回车键退出...")
+        import tkinter as tk
+        from tkinter import messagebox
+        root = tk.Tk()
+        root.withdraw()
+        messagebox.showerror("程序错误", f"程序运行出错:\n\n{e}")
         sys.exit(1)
 
 
