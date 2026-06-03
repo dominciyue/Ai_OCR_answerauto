@@ -10,10 +10,13 @@ from pathlib import Path
 import io
 
 # 设置UTF-8编码输出（仅在有控制台时）
-if sys.stdout is not None and hasattr(sys.stdout, 'buffer') and sys.stdout.buffer is not None:
-    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
-if sys.stderr is not None and hasattr(sys.stderr, 'buffer') and sys.stderr.buffer is not None:
-    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
+try:
+    if sys.stdout is not None and hasattr(sys.stdout, 'buffer') and sys.stdout.buffer is not None:
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+    if sys.stderr is not None and hasattr(sys.stderr, 'buffer') and sys.stderr.buffer is not None:
+        sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
+except:
+    pass  # 打包后windowed模式下忽略
 
 # 判断是否打包运行
 if getattr(sys, 'frozen', False):
