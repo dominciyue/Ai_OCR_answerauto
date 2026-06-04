@@ -1,8 +1,8 @@
 """
-首次运行配置向导 - 独立模块
+首次运行配置向导 - 修复版
 """
 import tkinter as tk
-from tkinter import ttk, messagebox
+from tkinter import messagebox
 import yaml
 from pathlib import Path
 
@@ -12,13 +12,16 @@ class FirstRunWizard:
 
     def __init__(self, config_path):
         self.config_path = Path(config_path)
-        self.config = {}
-        self.result = None
+        self.config = None
+        self.saved = False
 
         self.window = tk.Tk()
         self.window.title("AI答题系统 - 首次配置")
         self.window.geometry("600x500")
         self.window.resizable(False, False)
+
+        # 窗口关闭事件
+        self.window.protocol("WM_DELETE_WINDOW", self._on_close)
 
         # 居中显示
         self._center_window()
@@ -76,8 +79,6 @@ class FirstRunWizard:
             ("通义千问（阿里云）", "qwen"),
             ("智谱AI（清华）", "zhipu"),
             ("Moonshot（Kimi）", "moonshot"),
-            ("OpenAI GPT", "openai"),
-            ("Claude", "claude"),
         ]
 
         for i, (label, value) in enumerate(providers):
@@ -137,23 +138,10 @@ class FirstRunWizard:
         tk.Button(
             button_frame,
             text="保存并启动",
-            command=self._save_config,
+            command=self._save_and_start,
             bg='#4CAF50',
             fg='white',
             font=('Microsoft YaHei UI', 11, 'bold'),
-            padx=30,
-            pady=10,
-            relief='flat',
-            cursor='hand2'
-        ).pack(side='left', padx=5)
-
-        tk.Button(
-            button_frame,
-            text="稍后配置",
-            command=self._skip,
-            bg='#757575',
-            fg='white',
-            font=('Microsoft YaHei UI', 11),
             padx=30,
             pady=10,
             relief='flat',
@@ -169,8 +157,6 @@ class FirstRunWizard:
             "qwen": "• 注册：https://dashscope.aliyun.com/\n• 阿里云出品，速度快",
             "zhipu": "• 注册：https://open.bigmodel.cn/\n• 清华出品，效果好",
             "moonshot": "• 注册：https://platform.moonshot.cn/\n• Kimi出品，上下文长",
-            "openai": "• 注册：https://platform.openai.com/\n• 需要翻墙",
-            "claude": "• 注册：https://console.anthropic.com/\n• 需要翻墙",
         }
 
         self.hint_label.config(text=hints.get(provider, ""))
@@ -182,8 +168,8 @@ class FirstRunWizard:
         else:
             self.api_key_entry.config(show='*')
 
-    def _save_config(self):
-        """保存配置"""
+    def _save_and_start(self):
+        """保存配置并启动"""
         api_key = self.api_key_var.get().strip()
 
         if not api_key:
@@ -213,16 +199,6 @@ class FirstRunWizard:
                 "provider": "openai",
                 "model": "moonshot-v1-8k",
                 "base_url": "https://api.moonshot.cn/v1"
-            },
-            "openai": {
-                "provider": "openai",
-                "model": "gpt-4o",
-                "base_url": None
-            },
-            "claude": {
-                "provider": "claude",
-                "model": "claude-3-5-sonnet-20241022",
-                "base_url": None
             },
         }
 
@@ -268,40 +244,32 @@ class FirstRunWizard:
             with open(self.config_path, 'w', encoding='utf-8') as f:
                 yaml.dump(self.config, f, allow_unicode=True, default_flow_style=False)
 
-            self.result = self.config
+            self.saved = True
             self.window.destroy()
 
         except Exception as e:
             messagebox.showerror("错误", f"保存配置失败:\n\n{e}", parent=self.window)
 
-    def _skip(self):
-        """跳过配置"""
-        result = messagebox.askyesno(
-            "确认",
-            "跳过配置将无法使用AI功能。\n\n确定要跳过吗？",
-            parent=self.window
-        )
-        if result:
+    def _on_close(self):
+        """窗口关闭事件"""
+        if not self.saved:
+            result = messagebox.askyesno(
+                "确认退出",
+                "配置尚未保存，确定要退出吗？\n\n退出后无法使用程序。",
+                parent=self.window
+            )
+            if result:
+                self.window.destroy()
+        else:
             self.window.destroy()
 
     def run(self):
         """显示向导并等待结果"""
         self.window.mainloop()
-        return self.result
+        return self.config if self.saved else None
 
 
 def show_first_run_wizard(config_path):
     """显示首次运行向导"""
     wizard = FirstRunWizard(config_path)
     return wizard.run()
-
-
-if __name__ == "__main__":
-    # 测试
-    result = show_first_run_wizard("config/config.yaml")
-    if result:
-        print("配置完成！")
-        print(f"AI提供商: {result['ai']['provider']}")
-        print(f"模型: {result['ai']['model']}")
-    else:
-        print("用户跳过配置")

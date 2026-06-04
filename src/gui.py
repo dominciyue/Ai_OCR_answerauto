@@ -658,12 +658,44 @@ class AnswerSystemGUI:
             window.destroy()
 
     def show_settings(self):
-        """显示设置窗口"""
-        from src.hotkey_settings import show_hotkey_settings
+        """显示设置菜单"""
+        # 创建设置菜单
+        menu = tk.Menu(self.root, tearoff=0)
+        menu.add_command(label="⌨️ 快捷键设置", command=self._show_hotkey_settings)
+        menu.add_command(label="🔑 API配置", command=self._show_api_settings)
+        menu.add_separator()
+        menu.add_command(label="关闭", command=menu.destroy)
 
+        # 在鼠标位置显示菜单
+        menu.post(self.root.winfo_pointerx(), self.root.winfo_pointery())
+
+    def _show_settings_menu(self):
+        """显示设置菜单"""
+        self.show_settings()
+
+    def _show_hotkey_settings(self):
+        """显示快捷键设置"""
+        from src.hotkey_settings import show_hotkey_settings
         result = show_hotkey_settings(self.root, self.config)
         if result:
             self.log(f"✅ 快捷键已更新，请重启程序生效")
+
+    def _show_api_settings(self):
+        """显示API配置"""
+        from src.api_settings import show_api_settings
+        from pathlib import Path
+
+        # 获取配置文件路径
+        if getattr(sys, 'frozen', False):
+            root_dir = Path(sys.executable).parent
+        else:
+            root_dir = Path(__file__).parent.parent
+
+        config_path = root_dir / "config" / "config.yaml"
+
+        result = show_api_settings(self.root, config_path)
+        if result:
+            self.log(f"✅ API配置已更新")
 
     def _copy_to_clipboard(self, text, window):
         """复制到剪贴板"""
