@@ -66,7 +66,8 @@ GitHub: https://github.com/dominciyue/Ai_OCR_answerauto
 完全免费开源，MIT协议
 "@
 
-$usageText | Out-File -FilePath "$releaseDir\使用说明.txt" -Encoding UTF8
+# Use UTF8 without BOM
+[System.IO.File]::WriteAllText("$releaseDir\README.txt", $usageText, (New-Object System.Text.UTF8Encoding $false))
 
 Write-Host ""
 Write-Host "✓ Release package created successfully!" -ForegroundColor Green
@@ -77,10 +78,10 @@ Write-Host "Package contents:" -ForegroundColor Yellow
 Write-Host "  - AI_Answer_System.exe (Main program)"
 Write-Host "  - config\config.example.yaml (Config template)"
 Write-Host "  - README.md (Documentation)"
+Write-Host "  - README.txt (Quick start guide)"
 Write-Host "  - LICENSE (MIT License)"
 Write-Host "  - CONFIG_GUIDE.md (Config guide)"
 Write-Host "  - docs\ (Documentation folder)"
-Write-Host "  - 使用说明.txt (Quick start)"
 Write-Host ""
 Write-Host "Next steps:" -ForegroundColor Yellow
 Write-Host "1. Test: cd $releaseDir; .\AI_Answer_System.exe"
