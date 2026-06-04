@@ -87,11 +87,9 @@ class AIClient:
                     max_retries=self.ai_config.get('max_retries', 3)
                 )
             elif provider == 'claude':
-                # Claude
+                # Claude（不使用proxies参数）
                 self.client = anthropic.Anthropic(
-                    api_key=api_key,
-                    timeout=self.ai_config.get('timeout', 30),
-                    max_retries=self.ai_config.get('max_retries', 3)
+                    api_key=api_key
                 )
             else:
                 raise ValueError(f"不支持的AI提供商: {provider}")
