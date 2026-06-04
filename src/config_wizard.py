@@ -17,7 +17,7 @@ class FirstRunWizard:
 
         self.window = tk.Tk()
         self.window.title("AI答题系统 - 首次配置")
-        self.window.geometry("600x500")
+        self.window.geometry("600x650")  # 增加高度
         self.window.resizable(False, False)
 
         # 窗口关闭事件
@@ -79,6 +79,8 @@ class FirstRunWizard:
             ("通义千问（阿里云）", "qwen"),
             ("智谱AI（清华）", "zhipu"),
             ("Moonshot（Kimi）", "moonshot"),
+            ("百川智能", "baichuan"),
+            ("OpenAI GPT", "openai"),
         ]
 
         for i, (label, value) in enumerate(providers):
@@ -157,6 +159,8 @@ class FirstRunWizard:
             "qwen": "• 注册：https://dashscope.aliyun.com/\n• 阿里云出品，速度快",
             "zhipu": "• 注册：https://open.bigmodel.cn/\n• 清华出品，效果好",
             "moonshot": "• 注册：https://platform.moonshot.cn/\n• Kimi出品，上下文长",
+            "baichuan": "• 注册：https://platform.baichuan-ai.com/\n• 百川出品，性能稳定",
+            "openai": "• 注册：https://platform.openai.com/\n• 需要翻墙",
         }
 
         self.hint_label.config(text=hints.get(provider, ""))
@@ -199,6 +203,16 @@ class FirstRunWizard:
                 "provider": "openai",
                 "model": "moonshot-v1-8k",
                 "base_url": "https://api.moonshot.cn/v1"
+            },
+            "baichuan": {
+                "provider": "openai",
+                "model": "Baichuan2-Turbo",
+                "base_url": "https://api.baichuan-ai.com/v1"
+            },
+            "openai": {
+                "provider": "openai",
+                "model": "gpt-4o",
+                "base_url": None
             },
         }
 
