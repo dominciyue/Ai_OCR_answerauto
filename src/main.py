@@ -2,7 +2,6 @@
 AI自动答题系统 - 主程序（修复打包问题）
 """
 
-import os
 import sys
 import logging
 import yaml
@@ -35,26 +34,40 @@ def load_config():
     """加载配置文件"""
     config_path = ROOT_DIR / "config" / "config.yaml"
 
-    # 如果不存在，尝试从example复制
+    # 如果不存在，显示首次配置向导
     if not config_path.exists():
         example_path = ROOT_DIR / "config" / "config.example.yaml"
-        if example_path.exists():
-            print("⚠️  首次运行，正在创建配置文件...")
-            config_path.parent.mkdir(parents=True, exist_ok=True)
-            import shutil
-            shutil.copy(example_path, config_path)
-            print("✅ 配置文件已创建")
 
-    if not config_path.exists():
-        import tkinter as tk
-        from tkinter import messagebox
-        root = tk.Tk()
-        root.withdraw()
-        messagebox.showerror(
-            "配置文件不存在",
-            f"配置文件不存在！\n\n请在程序目录下创建 config/config.yaml 配置文件\n\n参考: config/config.example.yaml\n\n程序目录: {ROOT_DIR}"
-        )
-        sys.exit(1)
+        # 如果example也不存在，创建一个
+        if not example_path.exists():
+            example_path.parent.mkdir(parents=True, exist_ok=True)
+            # 创建最小配置
+            example_config = {
+                "ai": {"provider": "openai", "api_key": "your-api-key-here", "model": "deepseek-chat", "base_url": "https://api.deepseek.com"},
+                "ocr": {"confidence_threshold": 0.5},
+                "gui": {"hotkey": "f9", "quit_hotkey": "ctrl+q"},
+                "capture": {"border_color": [255, 0, 0], "border_width": 2},
+                "logging": {"level": "INFO", "save_to_file": True, "log_file": "./logs/app.log"}
+            }
+            with open(example_path, 'w', encoding='utf-8') as f:
+                yaml.dump(example_config, f, allow_unicode=True, default_flow_style=False)
+
+        # 显示配置向导
+        try:
+            from src.config_wizard import show_first_run_wizard
+            config = show_first_run_wizard(config_path)
+            if config:
+                return config
+            else:
+                # 用户跳过，退出
+                sys.exit(0)
+        except Exception as e:
+            import tkinter as tk
+            from tkinter import messagebox
+            root = tk.Tk()
+            root.withdraw()
+            messagebox.showerror("错误", f"配置向导启动失败:\n\n{e}")
+            sys.exit(1)
 
     try:
         with open(config_path, 'r', encoding='utf-8') as f:
