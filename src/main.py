@@ -123,14 +123,24 @@ def main():
     if not api_key or api_key in ["your-api-key-here", "your-deepseek-api-key-here"]:
         import tkinter as tk
         from tkinter import messagebox
-        root = tk.Tk()
-        root.withdraw()
-        messagebox.showerror(
-            "API密钥未配置",
-            "请在 config/config.yaml 中配置有效的API密钥！\n\n"
-            "参考: config/config.example.yaml 或 CONFIG_GUIDE.md"
-        )
-        sys.exit(1)
+
+        # 显示配置向导
+        try:
+            from src.config_wizard import show_first_run_wizard
+            config_path = ROOT_DIR / "config" / "config.yaml"
+            config = show_first_run_wizard(config_path)
+            if not config:
+                # 用户跳过配置
+                root = tk.Tk()
+                root.withdraw()
+                messagebox.showinfo("提示", "已跳过配置。\n\n程序将退出。")
+                sys.exit(0)
+            # 配置成功，继续使用新配置
+        except Exception as e:
+            root = tk.Tk()
+            root.withdraw()
+            messagebox.showerror("错误", f"配置失败:\n\n{e}")
+            sys.exit(1)
 
     logger.info("配置加载成功")
 
