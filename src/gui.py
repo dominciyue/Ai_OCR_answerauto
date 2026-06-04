@@ -3,6 +3,7 @@ GUI界面模块 - 优化版
 现代化设计，支持托盘图标和历史记录
 """
 
+import sys
 import logging
 import tkinter as tk
 from tkinter import ttk, scrolledtext, messagebox
